@@ -18,27 +18,34 @@ const stylesPath = path.resolve(__dirname, 'styles');
 const assetsPath = path.resolve(__dirname, 'assets');
 const assetsNewPath = path.resolve(resultDir, 'assets');
 
-// fs.stat(assetsNewPath, (err) => {
-//   if (!err) {
-//     return console.log('assetsNewPath exist');
-//   } else {
-//     fs.mkdir(assetsNewPath, (err) => {
-//       if (err) {
-//         return console.error(err);
-//       }
-//     });
-//   }
-// });
-// fs.readdir(assetsNewPath, (err, folders) => {
+fs.stat(assetsNewPath, (err) => {
+  if (!err) {
+    return console.log('assetsNewPath exist');
+  } else {
+    fs.mkdir(assetsNewPath, (err) => {
+      if (err) {
+        return console.error(err);
+      }
+    });
+  }
+});
+
+// fs.readdir(assetsNewPath, (err, files) => {
 //   if (err) {
 //     console.log('assetsNewPath empty');
 //   } else {
-//     for (let folder of folders) {
-//       fs.rm(path.join(assetsNewPath, folder), { recursive: true }, (err) => {
-//         if (err) throw err;
+//     for (let file of files) {
+//       fs.rm(path.join(assetsNewPath, file), { recursive: true }, (err) => {
+//         if (err) {
+//           if (err) {
+//             return console.error(err);
+//           }
+//           console.log('Directory remove successfully!');
+//         }
 //       });
 //     }
 //   }
+
 //   console.log('clean folder assets');
 // });
 const stylesBundle = path.resolve(resultDir, 'style.css');
@@ -89,18 +96,27 @@ fs.readdir(stylesPath, { withFileTypes: true }, (err, files) => {
   });
 });
 
+// fs.readdir(assetsPath, (err, folders) => {
+//   if (err) throw err;
+//   folders.forEach((folder) => {
+//     let newFolder = path.resolve(assetsNewPath, `${folder.name}`);
+//     console.log(`copy ${folder.name}`);
+
+//   });
+// });
+
 fs.readdir(assetsPath, { withFileTypes: true }, (err, folders) => {
   if (err) throw err;
   folders.forEach((folder) => {
     let newFolder = path.resolve(assetsNewPath, `${folder.name}`);
     let oldFolder = path.resolve(assetsPath, `${folder.name}`);
-    fs.mkdir(newFolder, { recursive: true }, (err) => {
-      console.log(`copy ${folder.name}`);
-      if (err) {
-        return console.error(err);
-      }
-      fs.readdir(oldFolder, (err, files) => {
-        if (err) throw err;
+    fs.readdir(oldFolder, (err, files) => {
+      if (err) throw err;
+      fs.mkdir(newFolder, { recursive: true }, (err) => {
+        if (err) {
+          return console.error(err);
+        }
+        console.log('Directory created successfully!');
         files.forEach((file) => {
           let newFile = path.resolve(newFolder, `${file}`);
           let oldFile = path.resolve(oldFolder, `${file}`);
