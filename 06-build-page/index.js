@@ -18,30 +18,29 @@ const stylesPath = path.resolve(__dirname, 'styles');
 const assetsPath = path.resolve(__dirname, 'assets');
 const assetsNewPath = path.resolve(resultDir, 'assets');
 
-fs.stat(assetsNewPath, (err) => {
-  if (!err) {
-    return console.log('assetsNewPath exist');
-  } else {
-    fs.mkdir(assetsNewPath, (err) => {
-      if (err) {
-        return console.error(err);
-      }
-    });
-  }
-});
-fs.readdir(assetsNewPath, (err, folders) => {
-  if (err) {
-    console.log('assetsNewPath empty');
-  } else {
-    for (let folder of folders) {
-      fs.rm(path.join(assetsNewPath, folder), { recursive: true }, (err) => {
-        if (err) throw err;
-      });
-    }
-  }
-
-  console.log('clean folder assets');
-});
+// fs.stat(assetsNewPath, (err) => {
+//   if (!err) {
+//     return console.log('assetsNewPath exist');
+//   } else {
+//     fs.mkdir(assetsNewPath, (err) => {
+//       if (err) {
+//         return console.error(err);
+//       }
+//     });
+//   }
+// });
+// fs.readdir(assetsNewPath, (err, folders) => {
+//   if (err) {
+//     console.log('assetsNewPath empty');
+//   } else {
+//     for (let folder of folders) {
+//       fs.rm(path.join(assetsNewPath, folder), { recursive: true }, (err) => {
+//         if (err) throw err;
+//       });
+//     }
+//   }
+//   console.log('clean folder assets');
+// });
 const stylesBundle = path.resolve(resultDir, 'style.css');
 fs.truncate(stylesBundle, (err) => {
   if (err) {
@@ -95,20 +94,19 @@ fs.readdir(assetsPath, { withFileTypes: true }, (err, folders) => {
   folders.forEach((folder) => {
     let newFolder = path.resolve(assetsNewPath, `${folder.name}`);
     let oldFolder = path.resolve(assetsPath, `${folder.name}`);
-    console.log(`copy ${folder.name}`);
     fs.mkdir(newFolder, { recursive: true }, (err) => {
+      console.log(`copy ${folder.name}`);
       if (err) {
         return console.error(err);
       }
-    });
-
-    fs.readdir(oldFolder, (err, files) => {
-      if (err) throw err;
-      files.forEach((file) => {
-        let newFile = path.resolve(newFolder, `${file}`);
-        let oldFile = path.resolve(oldFolder, `${file}`);
-        console.log(file);
-        fs.createReadStream(oldFile).pipe(fs.createWriteStream(newFile));
+      fs.readdir(oldFolder, (err, files) => {
+        if (err) throw err;
+        files.forEach((file) => {
+          let newFile = path.resolve(newFolder, `${file}`);
+          let oldFile = path.resolve(oldFolder, `${file}`);
+          console.log(`copy ${file}`);
+          fs.createReadStream(oldFile).pipe(fs.createWriteStream(newFile));
+        });
       });
     });
   });
